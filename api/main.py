@@ -25,3 +25,8 @@ def make_predictions(dataModel: DataModel):
     model = load("../logistic_regression.joblib")
     result = model.predict(df)
     return result
+
+@app.post("/retrain")
+def retrain_model():
+
+   return None
