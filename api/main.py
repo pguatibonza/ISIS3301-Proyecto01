@@ -22,11 +22,11 @@ def read_item(item_id: int, q: Optional[str] = None):
 def make_predictions(dataModel: DataModel):
     df = pd.DataFrame(dataModel.dict(), columns=dataModel.dict().keys(), index=[0])
     df.columns = dataModel.columns()
-    model = load("../logistic_regression.joblib")
+    model = load("assets/logistic_regression.joblib")
     result = model.predict(df)
     return result
 
 @app.post("/retrain")
-def retrain_model():
+def retrain_model(dataModel: DataModel):
 
    return None
