@@ -39,6 +39,12 @@ async def make_predictions(request: Request, file: UploadFile):
 
 
 @app.post("/retrain")
-def retrain_model(dataModel: DataModel):
+async def retrain_model(request: Request, file: UploadFile):
+    contents = await file.read()
+    df = pd.read_csv(StringIO(contents.decode()))
 
-    return None
+    model = Model()
+    retrain =  model.retrain_model(df)
+    return templates.TemplateResponse("index.html", {"request": request, "rmse": retrain[0], "mae": retrain[1], "r2": retrain[2]})
+     
+
