@@ -24,15 +24,10 @@ def read_item(item_id: int, q: Optional[str] = None):
 
 @app.post("/predict")
 async def make_predictions(request: Request, file: UploadFile):
-    #  df = pd.DataFrame(dataModel.dict(), columns=dataModel.dict().keys(), index=[0])
-    #  df.columns = dataModel.columns()
-    #  model = load("assets/logistic_regression.joblib")
-    #  result = model.predict(df)
-    #  return result
-    contents = await file.read()
-    df = pd.read_csv(StringIO(contents.decode()))
 
-    model = Model()
+    df = pd.read_csv(file.file, sep=',', encoding='utf-8', index_col=0)
+
+    model = Model(columns=df.columns.tolist())
     predictions_dic = model.make_predictions(df)
     predictions = predictions_dic['prediction']
     return templates.TemplateResponse("index.html", {"request": request, "predictions": dict(predictions)})
@@ -44,7 +39,5 @@ async def retrain_model(request: Request, file: UploadFile):
     df = pd.read_csv(StringIO(contents.decode()))
 
     model = Model()
-    retrain =  model.retrain_model(df)
+    retrain = model.retrain_model(df)
     return templates.TemplateResponse("index.html", {"request": request, "rmse": retrain[0], "mae": retrain[1], "r2": retrain[2]})
-     
-
