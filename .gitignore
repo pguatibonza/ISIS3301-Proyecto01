@@ -1,2 +1,4 @@
 nltk_data/*
 ejemplo/*
+
+*.pyc

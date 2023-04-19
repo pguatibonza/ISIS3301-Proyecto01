@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>API de Modelo Regresión Lineal - MotorAlpes</title>
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0pq" crossorigin="anonymous">
+	<style>
+		body {
+			margin: 20px;
+		}
+		h1 {
+			color: #007BFF;
+			font-size: 40px;
+			font-weight: bold;
+			margin-bottom: 20px;
+		}
+		h2 {
+			color: #007BFF;
+			font-size: 30px;
+			font-weight: bold;
+			margin-bottom: 20px;
+		}
+		p {
+			color: #6C757D;
+			font-size: 20px;
+			font-weight: bold;
+			margin-bottom: 20px;
+		}
+		form {
+			margin-top: 20px;
+		}
+		button[type="submit"] {
+			background-color: #007BFF;
+			border: none;
+			color: #fff;
+			padding: 8px 16px;
+			border-radius: 4px;
+			cursor: pointer;
+		}
+		ul {
+			margin-top: 20px;
+			padding-left: 0;
+			list-style: none;
+			color: #6C757D;
+			font-size: 18px;
+		}
+		li {
+			margin-bottom: 10px;
+		}
+	</style>
+</head>
+<body>
+	<div class="container">
+		<center>
+			<h1>API de Modelo Regresión Lineal</h1>
+			<h2>MotorAlpes</h2>
+		</center>
+		<center>
+			<p>*CONTEXTO*</p>
+		</center>
+		<h2>Cargar Archivo</h2>
+		<div>
+			<form method="post" action="/predict" enctype="multipart/form-data">
+				<div class="form-group">
+					<input type="file" class="form-control-file" name="file">
+				</div>
+				<button type="submit" class="btn btn-primary">Cargar</button>
+			</form>
+			<br><br>
+			<ul>
+				{% for value in predictions %}
+					<li>Fila: {{ value }} - Valor Predecido: {{ predictions[value] }}</li>
+				{% endfor %}
+			</ul>
+		</div>
+	</div>
+	<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+	<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js" integrity="sha384-7Wpdz/DH1E7sTgoTrAwbM2WUB/HoWEcQ2/NyfaJej1YAAW+FlhOZ/MzGOZpe0BvV" crossorigin="anonymous"></script>

@@ -2,16 +2,17 @@ from typing import Optional
 
 from fastapi import FastAPI, Request
 
+from fastapi.templating import Jinja2Templates
 import pandas as  pd
 from joblib import load
 from DataModel import DataModel
 
 app = FastAPI()
-
+templates = Jinja2Templates(directory="templates")
 
 @app.get("/")
-def read_root():
-   return {"Hello": "World"}
+def read_root(request: Request):
+   return templates.TemplateResponse("index.html", {"request": request})
 
 
 @app.get("/items/{item_id}")
