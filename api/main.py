@@ -7,10 +7,15 @@ from fastapi.templating import Jinja2Templates
 import pandas as pd
 from joblib import load
 from DataModel import DataModel
+from PredictionModel import Model
 
 app = FastAPI()
 templates = Jinja2Templates(directory="templates")
 
+@app.on_event("startup")
+async def startup_event():
+    global prediction_model
+    prediction_model = Model()
 
 @app.get("/")
 def read_root(request: Request):
