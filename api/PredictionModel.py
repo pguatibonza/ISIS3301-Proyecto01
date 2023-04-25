@@ -15,6 +15,7 @@ ROOT_DIR = os.path.abspath(os.curdir)
 NLTK_DATA_DIR = os.path.join(ROOT_DIR, 'nltk_data')
 nltk.data.path.append(NLTK_DATA_DIR)
 
+from my_processor import clean_text
 
 
 class Model:
@@ -30,9 +31,10 @@ class Model:
 
     def make_predictions(self, data: pd.DataFrame):
         # result = self.model.predict(data)
-        
+        data["review_es"] = clean_text(data["review_es"])
         dic = {}
         for review in data["review_es"]:
+            
             result = self.model.predict([review])
 
             if (result[0] == 1):
