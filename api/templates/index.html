@@ -69,8 +69,8 @@
 			</form>
 			<br><br>
 			<ul>
-				{% for value in predictions %}
-					<li>Fila: {{ value }} - Valor Predecido: {{ predictions[value] }}</li>
+				{% for review in predictions %}
+					<li>Review: {{ review }} - Valor Predecido: {{ predictions[review] }}</li>
 				{% endfor %}
 			</ul>
 		</div>
