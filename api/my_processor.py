@@ -1,18 +1,21 @@
-import string
-
-import pandas as pd
-import warnings; warnings.simplefilter('ignore')
-import re as regularExpr, unicodedata
-import contractions
-##from pandas_profiling import ProfileReport
+from pydantic import BaseModel
+import re, string, unicodedata
+from num2words import num2words
+from nltk import word_tokenize, sent_tokenize
 from nltk.corpus import stopwords
-from nltk.stem import LancasterStemmer, WordNetLemmatizer
-from nltk import word_tokenize
-
-from typing import Any, Union, List, re
-from sklearn.base import BaseEstimator, TransformerMixin
-
-
+from sklearn.model_selection import train_test_split
+from sklearn.feature_extraction.text import TfidfVectorizer, CountVectorizer, HashingVectorizer
+from sklearn.preprocessing import FunctionTransformer
+import pandas as pd
+import nltk
+from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
+import numpy as np
+from sklearn.metrics import accuracy_score, confusion_matrix, classification_report
+nltk.download('stopwords')
+nltk.download('punkt')
+from sklearn.linear_model import LogisticRegression
+from sklearn.pipeline import Pipeline
+from joblib import dump
 
 def remove_non_ascii(words):
     """Remove non-ASCII characters from list of tokenized words"""
@@ -22,87 +25,56 @@ def remove_non_ascii(words):
         new_words.append(new_word)
     return new_words
 
+
 def to_lowercase(words):
     """Convert all characters to lowercase from list of tokenized words"""
-    new_words = []
-    for word in words:
-        new_word = word.lower()
-        new_words.append(new_word)
-    return new_words
+    return [x.lower() for x in words]
 
 def remove_punctuation(words):
     """Remove punctuation from list of tokenized words"""
+    
     new_words = []
     for word in words:
-        new_word = regularExpr.sub(r'[^\w\s]', '', word)
+        new_word = re.sub(r'[^\w\s]', ' ', word)
         if new_word != '':
             new_words.append(new_word)
     return new_words
-
-def remove_stopwords(words):
-    """Remove stop words from list of tokenized words"""
+def replace_numbers(words):
+    """Replace all interger occurrences in list of tokenized words with textual representation"""
     new_words = []
-    cachedStopWords = stopwords.words("english")
-
     for word in words:
-        if word not in cachedStopWords:
-            if word == 'one' or word == 'also': continue
+        if word.isdigit():
+            new_word = num2words(word, lang = 'es_CO')
+            new_words.append(new_word)
+        else:
             new_words.append(word)
     return new_words
 
+
+def remove_stopwords(words):
+    """Remove stop words from list of tokenized words"""
+    stopword_es = nltk.corpus.stopwords.words('spanish')
+    new_words = []
+
+    for word  in words:
+        if word not in stopword_es:
+            new_words.append(word)
+    return new_words
+    
 def preprocessing(words):
     words = to_lowercase(words)
+    words = replace_numbers(words)
     words = remove_punctuation(words)
     words = remove_non_ascii(words)
     words = remove_stopwords(words)
     return words
 
-def stem_words(words):
-    """Stem words in list of tokenized words"""
-    stemmer = LancasterStemmer()
-    stems = []
-    for word in words:
-        stem = stemmer.stem(word)
-        stems.append(stem)
-    return stems
+def clean_text(reviews):
+    reviews = reviews.apply(word_tokenize).apply(preprocessing)
 
-def lemmatize_verbs(words):
-    """Lemmatize verbs in list of tokenized words"""
-    lemmatizer = WordNetLemmatizer()
-    lemmas = []
-    for word in words:
-        lemma = lemmatizer.lemmatize(word, pos='v')
-        lemmas.append(lemma)
-    return lemmas
+    reviews = reviews.apply(lambda x: ' '.join(map(str, x)))
 
-def stem_and_lemmatize(words):
-    stems = stem_words(words)
-    lemmas = lemmatize_verbs(words)
-    return stems + lemmas
+    reviews = reviews.apply(word_tokenize).apply(preprocessing)
+    reviews = reviews.apply(lambda x: ' '.join(map(str, x)))
 
-
-class TextProcesser(BaseEstimator, TransformerMixin):
-
-
-    def fit(self, X: Any, y: Any = None) -> Any:
-        return self
-
-    def transform(
-        self,
-        X: Union[List[str], pd.Series],
-    ) -> pd.Series:
-        if isinstance(X, list):
-            X = pd.Series(X)
-
-        X = X.apply(contractions.fix)
-
-        X = X.apply(word_tokenize)
-
-        X = X.apply(preprocessing)
-
-        X = X.apply(stem_and_lemmatize)
-
-        X = X.apply(lambda x: " ".join(map(str, x)))
-
-
-        return X
+    return reviews
