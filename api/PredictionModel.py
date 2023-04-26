@@ -47,18 +47,14 @@ class Model:
 
         return {"prediction": dic}
 
-    def retrain_model(self, data):
-        X = data[["review_es"]]
-        Y = data[["sentimiento"]]
-        self.model.fit(X, Y)
-        y_pred = self.model.predict(X)
-        dill.dump(self.model, "assets/logistic_regression.joblib")
-
-        # Compare Y and self.model.predict(X) to see how good the model is
-        rmse = mean_squared_error(Y, y_pred, squared=False)
-        mae = mean_absolute_error(Y, y_pred)
-        r2 = r2_score(Y, y_pred)
-
-        return {"rmse": rmse, "mae": mae, "r2": r2}
+    def predict(self, data):
+        review = data
+        result = self.model.predict([review])
+        if (result[0] == 1):
+            result = "Positivo"
+        else:
+            result = "Negativo"
+        return {"prediction": result}
+    
     
     

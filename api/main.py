@@ -48,11 +48,10 @@ async def make_predictions(request: Request, file: UploadFile):
     return templates.TemplateResponse("index.html", {"request": request, "predictions": predictions})
 
 
-@app.post("/retrain")
-async def retrain_model(request: Request, file: UploadFile):
-    contents = await file.read()
-    df = pd.read_csv(StringIO(contents.decode()))
-
+@app.post("/predictFeeling")
+async def predict(request: Request, data):
     model = Model()
-    retrain = model.retrain_model(df)
-    return templates.TemplateResponse("index.html", {"request": request, "rmse": retrain[0], "mae": retrain[1], "r2": retrain[2]})
+    prediction = model.predict(data)
+    return prediction
+
+    
