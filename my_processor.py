@@ -82,6 +82,7 @@ def preprocessing(words):
 
 
 def clean_text(reviews):
+    print(reviews)
     reviews = reviews.apply(word_tokenize).apply(preprocessing)
 
     reviews = reviews.apply(lambda x: ' '.join(map(str, x)))

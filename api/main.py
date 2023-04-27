@@ -1,7 +1,7 @@
 from io import StringIO
 from typing import Optional
 
-from fastapi import FastAPI, Request, UploadFile
+from fastapi import FastAPI, Request, UploadFile, Form
 from .PredictionModel import Model
 from fastapi.templating import Jinja2Templates
 import pandas as pd
@@ -11,9 +11,12 @@ from .PredictionModel import Model
 import os
 import nltk
 nltk.data.path.append(os.path.abspath('./nltk_data'))
-nltk.download('punkt', quiet=True, raise_on_error=True, download_dir='./nltk_data')
-nltk.download('stopwords', quiet=True, raise_on_error=True, download_dir='./nltk_data')
-nltk.download('wordnet', quiet=True, raise_on_error=True, download_dir='./nltk_data')
+nltk.download('punkt', quiet=True, raise_on_error=True,
+              download_dir='./nltk_data')
+nltk.download('stopwords', quiet=True, raise_on_error=True,
+              download_dir='./nltk_data')
+nltk.download('wordnet', quiet=True, raise_on_error=True,
+              download_dir='./nltk_data')
 ROOT_DIR = os.path.abspath(os.curdir)
 NLTK_DATA_DIR = os.path.join(ROOT_DIR, 'nltk_data')
 nltk.data.path.append(NLTK_DATA_DIR)
@@ -22,14 +25,20 @@ nltk.data.path.append(NLTK_DATA_DIR)
 app = FastAPI()
 templates = Jinja2Templates(directory="api/templates")
 
+
 @app.on_event("startup")
 async def startup_event():
     global prediction_model
     prediction_model = Model()
 
+
 @app.get("/")
 def read_root(request: Request):
     return templates.TemplateResponse("index.html", {"request": request})
+
+@app.get("/predictInput")
+def read_predict(request: Request):
+    return templates.TemplateResponse("predict.html", {"request": request})
 
 
 @app.get("/items/{item_id}")
@@ -49,9 +58,8 @@ async def make_predictions(request: Request, file: UploadFile):
 
 
 @app.post("/predictFeeling")
-async def predict(request: Request, data):
+async def predict(request: Request, user_input: str = Form(...)):
+    print(user_input)
     model = Model()
-    prediction = model.predict(data)
-    return prediction
-
-    
+    prediction = model.predict(user_input)
+    return templates.TemplateResponse("predict.html", {"request": request, "prediction": prediction['prediction']})

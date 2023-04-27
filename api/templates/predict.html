@@ -49,7 +49,7 @@
 			margin-bottom: 10px;
 		}
 
-		.navbar {
+        .navbar {
 			background-color: #007BFF;
 			color: #fff;
 		}
@@ -71,13 +71,12 @@
 </head>
 <body>
 	<div class="container">
-		<nav class="navbar">
+        <nav class="navbar">
 			<ul>
 				<li><a href="/">Home</a></li>
 				<li><a href="/predictInput">Predict Input</a></li>
 			</ul>
 		</nav>
-
 		<center>
 			<h1>API de Modelo Regresión Lineal</h1>
 			<h2>PeliAlpes</h2>
@@ -85,20 +84,20 @@
 		<center>
 			<p>*CONTEXTO*</p>
 		</center>
-		<h2>Cargar Archivo</h2>
+		<h2>Predicción</h2>
 		<div>
-			<form method="post" action="/predict" enctype="multipart/form-data">
-				<div class="form-group">
-					<input type="file" class="form-control-file" name="file">
-				</div>
-				<button type="submit" class="btn btn-primary">Cargar</button>
-			</form>
+			<form method="post" action="/predictFeeling" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label for="user_input">Ingresa tu texto:</label>
+                    <input type="text" class="form-control" name="user_input" id="user_input">
+                </div>
+                <button type="submit" class="btn btn-primary">Predecir</button>
+            </form>
+            
 			<br><br>
-			<ul>
-				{% for review in predictions %}
-					<li>Review: {{ review }} - Valor Predecido: {{ predictions[review] }}</li>
-				{% endfor %}
-			</ul>
+			{% for review in prediction %}
+					<li>Input del usuario: {{ review }} - Valor Predecido: {{ prediction[review] }}</li>
+			{% endfor %}
 		</div>
 	</div>
 	<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>

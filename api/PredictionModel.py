@@ -15,7 +15,7 @@ ROOT_DIR = os.path.abspath(os.curdir)
 NLTK_DATA_DIR = os.path.join(ROOT_DIR, 'nltk_data')
 nltk.data.path.append(NLTK_DATA_DIR)
 
-from my_processor import clean_text
+from my_processor import clean_text, preprocessing
 
 
 class Model:
@@ -47,14 +47,14 @@ class Model:
 
         return {"prediction": dic}
 
-    def predict(self, data):
-        review = data
-        result = self.model.predict([review])
+    def predict(self, user_input: str):
+        review = preprocessing([user_input])
+        result = self.model.predict([*review])
         if (result[0] == 1):
             result = "Positivo"
         else:
             result = "Negativo"
-        return {"prediction": result}
+        return {"prediction": { user_input: result}}
     
     
     
